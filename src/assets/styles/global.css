@@ -1,0 +1,7 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    /* 上下左右の余白をなくす */
+}
+
+a { text-decoration: none; }
