@@ -5,7 +5,7 @@ export const useUserStore = defineStore('user',
     () => {
         const userId = ref("");
         const getUserId = async () => {
-            const response = await fetch(`${process.env["VUE_APP_API_BASE_URL"]}/api/authentication/user-id`, {
+            const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/user-id`, {
                 credentials: "include",
             });
             console.log(response);

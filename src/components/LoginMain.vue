@@ -9,18 +9,8 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import LoginForm from './LoginForm.vue';
-
-export default {
-    name: 'LoginMain',
-    setup() {
-        return {};
-    },
-    components: {
-        LoginForm
-    }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

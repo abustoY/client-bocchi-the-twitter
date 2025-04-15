@@ -5,7 +5,7 @@ export const useTweetStore = defineStore('tweet',
     () => {
         const tweets = ref([]);
         const loadTweets = async () => {
-            const response = await fetch(`${process.env["VUE_APP_API_BASE_URL"]}/api/tweets`, {
+            const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/tweets`, {
                 credentials: "include",
             });
 

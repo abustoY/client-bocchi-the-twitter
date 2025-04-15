@@ -56,23 +56,20 @@ const router = createRouter({
     routes: routes,
 });
 
-import {getAuthenticationStatus} from "@/authentication";
+import { useAuthStore } from './stores/auth';
 import { useUserStore } from './stores/user';
 
 router.beforeEach(async (to, from, next) => {
-    if (to.meta.requireAuth && !await getAuthenticationStatus()) {
-        console.log("trueだった")
-        next({
-            name: "LoginMain"
-        })
+    const authStore = useAuthStore();
+    
+    if (to.meta.requireAuth && !authStore.isAuthenticated) {
+        next({ name: "LoginMain" });
     } else {
-        console.log("falseだった")
-        if(await getAuthenticationStatus()) {
+        if (authStore.isAuthenticated) {
             await useUserStore().getUserId();
         }
         next();
     }
-
-})
+});
 
 export default router;

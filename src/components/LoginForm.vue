@@ -1,36 +1,46 @@
 <template>
-    <form id="login-form" v-bind:action="loginActionApi" method="post">
+    <form id="login-form" @submit.prevent="handleLogin">
         <div>
-            <label for="login-id">ID</label>
+            <label for="id">ID</label>
         </div>
         <div>
-            <input type="text" id="login-id" name="login-id">
+            <input type="text" id="id" v-model="id">
         </div>
         <div>
-            <label for="login-password">PASSWORD</label>
+            <label for="password">PASSWORD</label>
         </div>
         <div>
-            <input type="text" id="login-password" name="login-password">
+            <input type="password" id="password" v-model="password">
         </div>
         <button type="submit">Login</button>
     </form>
 </template>
     
-<script>
+<script setup>
+import { useAuthStore } from '../stores/auth';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { login } from '../authentication';
 
-export default {
-    name: 'LoginForm',
+const authStore = useAuthStore();
+const router = useRouter();
+const id = ref('');
+const password = ref('');
 
-    setup() {
-      console.log(process.env["VUE_APP_API_BASE_URL"]);
-      const loginActionApi = process.env["VUE_APP_API_BASE_URL"]+'/hoge';
-
-        return {
-          loginActionApi
+const handleLogin = async () => {
+    try {
+        const success = await login(id.value, password.value);
+        if (success) {
+            await authStore.checkAuth();
+            router.push('/');
+        } else {
+            alert('ログインに失敗しました');
         }
-
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('ログインに失敗しました');
     }
-}
+};
 </script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->

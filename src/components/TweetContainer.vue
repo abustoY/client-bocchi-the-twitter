@@ -6,23 +6,11 @@
     </div>
 </template>
     
-<script>
+<script setup>
 import { useTweetStore } from '../stores/tweet'
 import { onMounted } from 'vue';
 
-export default {
-    name: 'TweetContainer',
-
-    setup() {
-        onMounted(useTweetStore().loadTweets);
-
-        return {
-            useTweetStore
-        }
-
-
-    }
-}
+onMounted(useTweetStore().loadTweets);
 </script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->

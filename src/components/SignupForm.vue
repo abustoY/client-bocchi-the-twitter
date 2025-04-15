@@ -13,77 +13,49 @@
 
             <button type="submit">Signup</button>
         </form>
-        <!-- <input type="button" value="forroop" @click="causeRoop" class="forroop-button"> -->
     </div>
 </template>
 
-  
-<script>
+<script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-export default {
-    name: 'SignupForm',
-    setup() {
-        const promise = fetch('https://api.github.com/users/octocat');
-        console.log(promise);
-        // データの初期化
-        const id = ref('');
-        const name = ref('');
-        const password = ref('');
-        const causeRoop = async () => {
-            const response = await fetch('https://api.github.com/users/octocat');
+const router = useRouter();
+const id = ref('');
+const name = ref('');
+const password = ref('');
 
-            console.log(response)
-            console.log(typeof response)
-            // console.log(response.json())
-            // console.log(typeof response.json())
+const signup = async () => {
+    try {
+        const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ id: id.value, name: name.value, password: password.value }),
+        });
 
-            console.log(await response.json())
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('サーバーエラー:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: errorText
+            });
+            throw new Error(`サーバーエラー: ${response.status} ${errorText}`);
+        }
 
-
-            console.log(fetch('https://api.github.com/users/octocat'));
-
-            for (let i = 0; i <= 100; i++) {
-                try {
-                    // const response = await fetch('https://api.github.com/users/octocat');
-                    // console.log(response)
-
-                } catch (error) {
-                    console.error('catch error:', error);
-                }
-            }
-        };
-
-        // サインアップメソッド
-        const signup = async () => {
-            try {
-                const response = await fetch(`${process.env["VUE_APP_API_BASE_URL"]}/api/authentication/signup`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: id.value, name: name.value, password: password.value }),
-                });
-                console.log(response)
-            } catch (error) {
-                console.error('Signup failed', error);
-            }
-        };
-
-        // setup関数から返すデータとメソッド
-        return {
-            id,
-            name,
-            password,
-            signup,
-            causeRoop
-        };
-    },
+        // サインアップ成功後、ログインページにリダイレクト
+        router.push('/login-form');
+    } catch (error) {
+        console.error('サインアップエラー:', error);
+        alert(`サインアップに失敗しました: ${error.message}`);
+    }
 };
 </script>
 
 <style scoped>
-
 #signup-page {
     display: flex;
     flex-direction: column;

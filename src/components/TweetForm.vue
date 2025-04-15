@@ -5,57 +5,40 @@
     </form>
 </template>
     
-<script>
+<script setup>
 import { useTweetStore } from '@/stores/tweet';
 import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
 
-export default {
-    name: 'TweetForm',
+const tweetText = ref('');
 
-    setup() {
-        const tweetText = ref('');
-
-        const putTweet =async () => {
-            if (tweetText.value.trim() !== '') {
-                await createTweet(tweetText.value);
-                tweetText.value = '';
-                useTweetStore().loadTweets();
-            }
-        }
-
-        async function createTweet(message) {
-            console.log(message);
-
-            const data = {
-                userId: useUserStore().userId,
-                text: message
-            };
-            console.log(data);
-            console.log(JSON.stringify(data));
-
-            const response = await fetch(`${process.env["VUE_APP_API_BASE_URL"]}/api/tweets`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data),
-                credentials: "include"
-            });
-            console.log(response);
-
-            // const json = await response.json();
-            // console.log(json);
-
-        }
-
-        return {
-            tweetText,
-            putTweet,
-        }
-
-
+const putTweet = async () => {
+    if (tweetText.value.trim() !== '') {
+        await createTweet(tweetText.value);
+        tweetText.value = '';
+        useTweetStore().loadTweets();
     }
+}
+
+async function createTweet(message) {
+    console.log(message);
+
+    const data = {
+        userId: useUserStore().userId,
+        text: message
+    };
+    console.log(data);
+    console.log(JSON.stringify(data));
+
+    const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/tweets`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: "include"
+    });
+    console.log(response);
 }
 </script>
     
