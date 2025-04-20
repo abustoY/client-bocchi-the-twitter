@@ -5,9 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve-prod": "vue-cli-service serve --mode production",
-    "build": "cross-env VUE_APP_ENABLE_MSW=false vue-cli-service build --dest ../src/main/resources/static/",
-    "build-dev": "cross-env VUE_APP_ENABLE_MSW=false vue-cli-service build --dest ../src/main/resources/static/ --mode development",
-    "build-prod": "vue-cli-service build --dest ../src/main/resources/static/ --mode production",
+    "build": "vue-cli-service build --mode test --dest dist/",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
