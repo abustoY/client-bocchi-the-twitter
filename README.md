@@ -2,6 +2,12 @@
 
 Twitter風SNSアプリケーション
 
+クラウド環境にデプロイ済み[(URLはこちら)](https://client-bocchi-the-twitter.vercel.app/)
+
+デプロイ環境
+- フロントエンド：Vercel（https://vercel.com）
+- バックエンド、DB：Railway（https://railway.com）
+
 ## プロジェクト構成
 
 このプロジェクトは以下の3つのサブプロジェクトで構成されています：
