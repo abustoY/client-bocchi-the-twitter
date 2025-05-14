@@ -11,7 +11,7 @@ const routes = [
         name: "HomeMain",
         component: HomeMain,
         meta: {
-            requireAuth: true,
+            requireAuth: false,
         }
     },
     {
@@ -19,7 +19,7 @@ const routes = [
         name: "HomeMain",
         component: HomeMain,
         meta: {
-            requireAuth: true,
+            requireAuth: false,
         }
     },
     {

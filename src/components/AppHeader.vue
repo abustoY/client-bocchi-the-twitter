@@ -10,11 +10,11 @@
         プロフィール
       </div>
     </RouterLink>
-    <RouterLink to="/settings">
+    <!-- <RouterLink to="/settings">
       <div class="nav-element">
         設定
       </div>
-    </RouterLink>
+    </RouterLink> -->
     <RouterLink to="/login-form">
       <div class="nav-element">
         ログイン
