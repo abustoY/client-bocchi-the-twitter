@@ -59,7 +59,10 @@ const router = createRouter({
 import { useAuthStore } from './stores/auth';
 
 router.beforeEach(async (to, from, next) => {
-    if (!to.meta.requireAuth) next();
+    if (!to.meta.requireAuth){
+        next();
+        return
+    }
 
     const authStore = useAuthStore();
 
@@ -67,6 +70,7 @@ router.beforeEach(async (to, from, next) => {
     
     if (!authStore.isAuthenticated) {
         next({ name: "LoginMain" });
+        return
     } 
     
     next();
