@@ -61,11 +61,22 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
+    const logout = async () => {
+        await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/logout`, {
+            method: "POST",
+            credentials: "include"
+        });
+        isAuthenticated.value = false;
+        userId.value = null;
+        userName.value = null;
+    };
+
     return {
         isAuthenticated,
         userId,
         userName,
         login,
-        checkAuth
+        checkAuth,
+        logout
     };
 }); 
