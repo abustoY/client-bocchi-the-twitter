@@ -1,49 +1,46 @@
 <template>
-    <div v-for="myTweet in myTweets" v-bind:key="myTweet" class="tweet">
-        <div class="tweet-element name">{{ myTweet.name }}</div>
-        <div class="tweet-element text">{{ myTweet.text }}</div>
-        <div class="tweet-element date">{{ myTweet.created }}</div>
-        <div class="tweet-element"><button v-on:click="deleteTweet(myTweet.id)">削除</button></div>
+    <div v-for="myTweet in myTweets" :key="myTweet.id" class="tweet">
+      <div class="tweet-element name">{{ myTweet.name }}</div>
+      <div class="tweet-element text">{{ myTweet.text }}</div>
+      <div class="tweet-element date">{{ myTweet.created }}</div>
+      <div class="tweet-element">
+        <button @click="deleteTweet(myTweet.id)">削除</button>
+      </div>
     </div>
-</template>
-    
-<script setup>
-import { useUserStore } from '../stores/user'
-import { onMounted, ref } from 'vue';
-
-const myTweets = ref([]);
-
-async function loadMyTweets() {
-    const params = { user_id: useUserStore().userId }
+  </template>
+  
+  <script setup>
+  import { useAuthStore } from '../stores/auth';
+  import { onMounted, ref } from 'vue';
+  
+  const authStore = useAuthStore();
+  const myTweets = ref([]);
+  
+  const loadMyTweets = async () => {
+    const params = { user_id: authStore.userId };
     const query = new URLSearchParams(params);
     const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/tweets/user?${query}`, {
-        credentials: "include",
+      credentials: 'include'
     });
-
-    console.log(typeof response)
-    console.log(response)
+  
     const json = await response.json();
-    console.log(typeof json)
-    console.log(json)
-
     myTweets.value = json;
-}
-
-const deleteTweet = (id) => {
-    console.log(id)
-    const params = { tweet_id: id }
+  };
+  
+  const deleteTweet = async (id) => {
+    const params = { tweet_id: id };
     const query = new URLSearchParams(params);
-    fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/tweets?${query}`, {
-        method: "DELETE",
-        credentials: "include",
-    }).then(response => {
-        console.log(response)
-        loadMyTweets()
-    })
-}
-
-onMounted(loadMyTweets);
-</script>
+  
+    await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/tweets?${query}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+  
+    loadMyTweets();
+  };
+  
+  onMounted(loadMyTweets);
+  </script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

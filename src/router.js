@@ -57,19 +57,19 @@ const router = createRouter({
 });
 
 import { useAuthStore } from './stores/auth';
-import { useUserStore } from './stores/user';
 
 router.beforeEach(async (to, from, next) => {
+    if (!to.meta.requireAuth) next();
+
     const authStore = useAuthStore();
+
+    await authStore.checkAuth();
     
-    if (to.meta.requireAuth && !authStore.isAuthenticated) {
+    if (!authStore.isAuthenticated) {
         next({ name: "LoginMain" });
-    } else {
-        if (authStore.isAuthenticated) {
-            await useUserStore().getUserId();
-        }
-        next();
-    }
+    } 
+    
+    next();
 });
 
 export default router;

@@ -6,10 +6,12 @@
 </template>
     
 <script setup>
+import { useAuthStore } from '../stores/auth';
 import { useTweetStore } from '@/stores/tweet';
-import { useUserStore } from '@/stores/user';
+// import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
 
+const authStore = useAuthStore();
 const tweetText = ref('');
 
 const putTweet = async () => {
@@ -24,7 +26,8 @@ async function createTweet(message) {
     console.log(message);
 
     const data = {
-        userId: useUserStore().userId,
+        // userId: useUserStore().userId,
+        userId: authStore.userId,
         text: message
     };
     console.log(data);

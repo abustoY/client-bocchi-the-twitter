@@ -20,7 +20,6 @@
 import { useAuthStore } from '../stores/auth';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '../authentication';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -29,9 +28,8 @@ const password = ref('');
 
 const handleLogin = async () => {
     try {
-        const success = await login(id.value, password.value);
+        const success = await authStore.login(id.value, password.value);
         if (success) {
-            await authStore.checkAuth();
             router.push('/');
         } else {
             alert('ログインに失敗しました');

@@ -1,27 +1,71 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getAuthenticationStatus } from "@/authentication";
 
 export const useAuthStore = defineStore('auth', () => {
     const isAuthenticated = ref(false);
-    const isLoading = ref(true);
+    const userId = ref(null);
+    const userName = ref(null);
 
-    // 認証状態をチェックして更新
+    const setUserInfo = (json) => {
+        userId.value = json.id;
+        userName.value = json.name;
+    };
+
+    const login = async (id, password) => {
+        const params = new URLSearchParams();
+        params.append("id", id);
+        params.append("password", password);
+
+        const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/login`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: params
+        });
+
+        if (!response.ok) {
+            return false;
+        }
+
+        const json = await response.json();
+        setUserInfo(json)
+        isAuthenticated.value = true;
+
+        return true;
+    };
+
     const checkAuth = async () => {
-        isLoading.value = true;
+
+        if (isAuthenticated.value) return;
+
         try {
-            isAuthenticated.value = await getAuthenticationStatus();
-        } finally {
-            isLoading.value = false;
+            const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/status`, {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                isAuthenticated.value = false;
+                return;
+            }
+
+            const json = await response.json();
+
+            
+            setUserInfo(json)
+            isAuthenticated.value = true;
+
+        } catch (e) {
+            isAuthenticated.value = false;
         }
     };
 
-    // 初期化時に一度だけ認証状態をチェック
-    checkAuth();
-
     return {
         isAuthenticated,
-        isLoading,
+        userId,
+        userName,
+        login,
         checkAuth
     };
 }); 
