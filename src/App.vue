@@ -3,15 +3,13 @@
   <router-view></router-view>
 </template>
 
-<script>
+<script setup>
 import AppHeader from './components/AppHeader.vue'
+import { useAuthStore } from './stores/auth'
 
-export default {
-  name: 'App',
-  components: {
-    AppHeader,
-}
-}
+const authStore = useAuthStore()
+authStore.checkAuth()  // ← アプリ読み込み時に実行
+
 </script>
 
 <style>
