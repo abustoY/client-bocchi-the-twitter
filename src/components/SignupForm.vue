@@ -46,7 +46,6 @@ const signup = async () => {
             throw new Error(`サーバーエラー: ${response.status} ${errorText}`);
         }
 
-        // サインアップ成功後、ログインページにリダイレクト
         router.push('/login-form');
     } catch (error) {
         console.error('サインアップエラー:', error);

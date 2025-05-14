@@ -3,7 +3,7 @@
     <div class="wrapper-signup-form-link">
         <RouterLink to="/signup-form">
             <div class="signup-form-link">
-                SIGNUP YET ?
+                サインアップはこちら
             </div>
         </RouterLink>
     </div>

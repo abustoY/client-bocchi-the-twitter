@@ -48,8 +48,8 @@ export const handlers = [
     http.get(`${apiHostUrl}/api/authentication/status`, () => {
         return HttpResponse.text("true");
     }),
-    http.get(`${apiHostUrl}/api/authentication/user-id`, () => {
-        return HttpResponse.text("1");
-    }),
+    // http.get(`${apiHostUrl}/api/authentication/user-id`, () => {
+    //     return HttpResponse.text("1");
+    // }),
     
 ];

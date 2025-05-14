@@ -7,17 +7,17 @@
     </RouterLink>
     <RouterLink to="/my-page">
       <div class="nav-element">
-        MY PAGE
+        プロフィール
       </div>
     </RouterLink>
     <RouterLink to="/settings">
       <div class="nav-element">
-        SETTINGS
+        設定
       </div>
     </RouterLink>
     <RouterLink to="/login-form">
       <div class="nav-element">
-        LOGIN
+        ログイン
       </div>
     </RouterLink>
   </div>

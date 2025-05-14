@@ -1,23 +1,23 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+// import { defineStore } from "pinia";
+// import { ref } from "vue";
 
-export const useUserStore = defineStore('user',
-    () => {
-        const userId = ref("");
-        const getUserId = async () => {
-            const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/user-id`, {
-                credentials: "include",
-            });
-            console.log(response);
+// export const useUserStore = defineStore('user',
+//     () => {
+//         const userId = ref("");
+//         const getUserId = async () => {
+//             const response = await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/authentication/user-id`, {
+//                 credentials: "include",
+//             });
+//             console.log(response);
 
-            userId.value = await response.text();
+//             userId.value = await response.text();
             
-        }
+//         }
 
-        return {
-            userId,
-            getUserId
-        }
+//         return {
+//             userId,
+//             getUserId
+//         }
 
-    }
-)
+//     }
+// )

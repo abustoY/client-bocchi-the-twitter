@@ -1,6 +1,6 @@
 <template>
     <form id="tweet-form" v-on:submit.prevent="putTweet">
-        <textarea id="tweet-text" placeholder="Compose a tweet..." v-model="tweetText"></textarea>
+        <textarea id="tweet-text" placeholder="Tweetを投稿してください" v-model="tweetText"></textarea>
         <button type="submit">Tweet</button>
     </form>
 </template>
