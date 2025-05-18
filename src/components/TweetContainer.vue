@@ -14,8 +14,6 @@ import { onMounted } from 'vue';
 
 import TweetItem from './TweetItem.vue';
 
-const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
-
 onMounted(useTweetStore().loadTweets);
 </script>
     
