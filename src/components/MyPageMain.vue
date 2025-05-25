@@ -1,58 +1,47 @@
 <template>
-  <div class="user-info">
-    <label class="avatar-label">
-      <div class="avatar-image-wrapper small-avatar">
-        <img v-if="avatarUrl" :src="avatarUrl" alt="ユーザーアイコン" class="avatar-image" />
-        <div v-else class="avatar-placeholder-initial">＋</div>
-        <input type="file" @change="handleAvatarChange" accept="image/*" class="avatar-input" />
-      </div>
-    </label>
-    <p class="username">ユーザー名：{{ authStore.userName }}</p>
-    <button class="logout-button" @click="handleLogout">ログアウト</button>
-  </div>
-
+  <CommonProfile
+    :avatar-url="avatarUrl"
+    :user-name="authStore.userName"
+    :is-my-profile="true"
+    :follower-count="followerCount"
+    :following-count="followCount"
+    @logout="handleLogout"
+    @followers="() => router.push('/my-followers')"
+    @following="() => router.push('/my-following')"
+  />
   <MyTweetContainer />
 </template>
 
 <script setup>
+import CommonProfile from './CommonProfile.vue';
 import MyTweetContainer from './MyTweetContainer.vue';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useUserAvatars } from '../composables/useUserAvatars';
+
+const followCount = ref(0);
+const followerCount = ref(0);
 
 const authStore = useAuthStore();
 const router = useRouter();
-const avatarUrl = ref(null);
 
-onMounted(() => {
-  // Try to load the custom avatar, fallback to default if not found
-  const image = new Image();
-  const fallback = '/default-avatar.jpg'; // adjust path if necessary
-  image.onload = () => { avatarUrl.value = image.src; };
-  image.onerror = () => { avatarUrl.value = fallback; };
-  image.src = `${process.env["VUE_APP_API_HOST_URL"]}/api/user/avatar/${authStore.userId}`;
-});
+const avatarUrls = useUserAvatars([authStore.userId]);
+const avatarUrl = computed(() => avatarUrls[authStore.userId]?.value);
 
-const uploadAvatar = async (file) => {
-  const formData = new FormData();
-  formData.append('avatar', file);
-  formData.append('userId', authStore.userId);
+console.log(useUserAvatars([authStore.userId])[authStore.userId].value)
 
-  await fetch(`${process.env["VUE_APP_API_HOST_URL"]}/api/user/avatar`, {
-    method: 'POST',
-    body: formData,
-    credentials: 'include'
+onMounted(async () => {
+  const res1 = await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/follow/following?userId=${authStore.userId}`, {
+    credentials: 'include',
   });
-};
+  followCount.value = (await res1.json()).length;
 
-const handleAvatarChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    avatarUrl.value = URL.createObjectURL(file);
-    uploadAvatar(file); 
-  }
-};
+  const res2 = await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/follow/followers?userId=${authStore.userId}`, {
+    credentials: 'include',
+  });
+  followerCount.value = (await res2.json()).length;
+});
 
 const handleLogout = async () => {
   if (authStore.logout) {
@@ -70,75 +59,6 @@ const handleLogout = async () => {
 };
 </script>
 
-<style scoped>
-.username {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-}
-
-.logout-button {
-  padding: 6px 12px;
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-left: 12px;
-}
-
-.logout-button:hover {
-  background-color: #c9302c;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0;
-  gap: 10px;
-}
-
-.avatar-label {
-  position: relative;
-  display: inline-block;
-}
-
-.avatar-image-wrapper {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background-color: #eee;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-placeholder-initial {
-  font-size: 32px;
-  color: #888;
-}
-
-.avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.avatar-input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.small-avatar {
-  width: 32px;
-  height: 32px;
-  margin-right: 8px;
-}
-</style>
+<!--
+  不要なスタイルは削除しました（CommonProfile.vueで提供）。
+-->
