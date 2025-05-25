@@ -45,6 +45,31 @@ const routes = [
         meta: {
             requireAuth: false,
         }
+    },
+    {
+        path: '/user/:userId',
+        name: "UserProfile",
+        component: () => import('./components/UserProfile.vue'),
+        meta: {
+            requireAuth: true,
+        }
+    },
+    {
+        path: '/my-following',
+        name: "MyFollowing",
+        component: () => import('./components/MyFollowing.vue'),
+        meta: {
+            requireAuth: true,
+        }
+    },
+    {
+        path: '/my-followers',
+        name: "MyFollowers",
+        
+        component: () => import('./components/MyFollowers.vue'),
+        meta: {
+            requireAuth: true,
+        }
     }
 ];
 

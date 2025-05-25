@@ -1,6 +1,15 @@
 <template>
   <div class="tweet">
-    <div class="tweet-element name">{{ tweet.name }}</div>
+    <div class="tweet-element name">
+      <router-link :to="profileLink" class="tweet-user-link">
+        <img
+          :src="avatarUrl"
+          alt="ユーザーアイコン"
+          class="tweet-avatar"
+        />
+        {{ tweet.name }}
+      </router-link>
+    </div>
     <div class="tweet-element text">{{ tweet.text }}</div>
     <div class="tweet-element images" v-if="tweet.mediaIds && tweet.mediaIds.length > 0">
       <img
@@ -20,12 +29,26 @@
 
 <script setup>
 import { defineProps } from 'vue';
+import { useAuthStore } from '../stores/auth';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   tweet: {
     type: Object,
     required: true
+  },
+  avatarUrl: {
+    type: String,
+    required: true
   }
+});
+
+const authStore = useAuthStore();
+
+const profileLink = computed(() => {
+  return props.tweet.userId === authStore.userId
+    ? '/my-page'
+    : `/user/${props.tweet.userId}`;
 });
 
 const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
@@ -59,7 +82,6 @@ const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
 .tweet-element.name {
   font-weight: bold;
   font-size: 1.2em;
-  color: #007acc;
   flex: 1;
 }
 
@@ -95,4 +117,21 @@ const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
   align-items: center;
   margin-top: 10px;
 }
+
+.tweet-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  vertical-align: middle;
+}
 </style>
+.tweet-user-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #007acc;
+  font-weight: bold;
+  font-size: 1.2em;
+}
