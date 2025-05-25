@@ -70,7 +70,7 @@ const putTweet = async () => {
   /* 角を丸くする */
   padding: 20px;
   /* 内側の余白 */
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
   /* 上下の余白 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
    /* 軽いシャドウ */
