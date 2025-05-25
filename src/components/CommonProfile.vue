@@ -2,7 +2,14 @@
 
 <template>
   <div class="user-info">
-    <div class="avatar-image-wrapper">
+    <label class="avatar-upload-label" v-if="isMyProfile">
+      <div class="avatar-image-wrapper">
+        <img v-if="avatarUrl" :src="avatarUrl" alt="ユーザーアイコン" class="avatar-image" />
+        <div v-else class="avatar-placeholder-initial">＋</div>
+        <input type="file" @change="handleAvatarChange" accept="image/*" hidden />
+      </div>
+    </label>
+    <div v-else class="avatar-image-wrapper">
       <img v-if="avatarUrl" :src="avatarUrl" alt="ユーザーアイコン" class="avatar-image" />
       <div v-else class="avatar-placeholder-initial">＋</div>
     </div>
@@ -20,6 +27,8 @@
 
 <script setup>
 import { defineProps } from 'vue';
+import { useAuthStore } from '../stores/auth';
+
 defineProps({
   avatarUrl: String,
   userName: String,
@@ -28,6 +37,26 @@ defineProps({
   followerCount: Number,
   followingCount: Number,
 });
+
+const authStore = useAuthStore();
+
+const handleAvatarChange = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('avatar', file);
+  formData.append('userId', authStore.userId);
+
+  await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/user/avatar`, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  });
+
+  // 強制再読み込みでキャッシュを回避
+  window.location.reload();
+};
 </script>
 
 <style scoped>
@@ -96,5 +125,9 @@ defineProps({
 
 .logout-button:hover {
   background-color: #c9302c;
+}
+
+.avatar-upload-label {
+  cursor: pointer;
 }
 </style>
