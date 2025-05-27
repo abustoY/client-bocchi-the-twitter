@@ -8,7 +8,7 @@
             <label for="name">表示名:</label>
             <input type="text" id="name" v-model="name" required>
 
-            <label for="password">Password:</label>
+            <label for="password">PASSWORD:</label>
             <input type="password" id="password" v-model="password" required>
 
             <button type="submit">サインアップ</button>
