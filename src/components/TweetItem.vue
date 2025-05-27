@@ -21,13 +21,15 @@
       />
     </div>
     <div class="tweet-element footer-row">
-      <div class="tweet-element date">{{ tweet.created }}</div>
+      <div class="tweet-element date">{{ formatDate(tweet.created) }}</div>
       <slot></slot>
     </div>
   </div>
 </template>
 
 <script setup>
+import { format, parseISO } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { defineProps } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { computed } from 'vue';
@@ -52,6 +54,11 @@ const profileLink = computed(() => {
 });
 
 const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
+
+const formatDate = (isoString) => {
+  const date = parseISO(isoString);
+  return format(date, 'yyyy年M月d日 HH:mm', { locale: ja });
+};
 </script>
 
 <style scoped>
@@ -126,7 +133,6 @@ const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
   margin-right: 8px;
   vertical-align: middle;
 }
-</style>
 .tweet-user-link {
   display: inline-flex;
   align-items: center;
@@ -135,3 +141,4 @@ const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
   font-weight: bold;
   font-size: 1.2em;
 }
+</style>
