@@ -1,17 +1,17 @@
 <template>
     <div id="signup-page">
-        <h1>Signup</h1>
+        <h1>サインアップ</h1>
         <form @submit.prevent="signup" id="signup-form">
             <label for="id">ID:</label>
             <input type="text" id="id" v-model="id" required>
 
-            <label for="name">Name:</label>
+            <label for="name">表示名:</label>
             <input type="text" id="name" v-model="name" required>
 
             <label for="password">Password:</label>
             <input type="password" id="password" v-model="password" required>
 
-            <button type="submit">Signup</button>
+            <button type="submit">サインアップ</button>
         </form>
     </div>
 </template>

@@ -1,6 +1,9 @@
 
 import { _internalUseAvatarUrl as _internalUseAvatarUrl } from './useAvatarUrl';
 
+// モジュールレベルのキャッシュ
+const avatarUrlCache = new Map();
+
 /**
  * ユーザーID配列を元にアバターURLのマップ（userId => Ref<string>）を返す。
  * @returns {Object<string, Ref<string>>}
@@ -8,7 +11,10 @@ import { _internalUseAvatarUrl as _internalUseAvatarUrl } from './useAvatarUrl';
 export function useUserAvatars(userIds) {
   const avatarMap = {};
   userIds.forEach(userId => {
-    avatarMap[userId] = _internalUseAvatarUrl(userId);
+    if (!avatarUrlCache.has(userId)) {
+      avatarUrlCache.set(userId, _internalUseAvatarUrl(userId));
+    }
+    avatarMap[userId] = avatarUrlCache.get(userId);
   });
   return avatarMap;
 }
