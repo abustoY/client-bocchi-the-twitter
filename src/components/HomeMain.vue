@@ -4,11 +4,20 @@
 
     <div class="tab-buttons">
       <button :class="{ active: currentTab === 'all' }" @click="currentTab = 'all'">全て</button>
-      <button :class="{ active: currentTab === 'following' }" @click="currentTab = 'following'">フォロー中</button>
+      <button
+        :class="{ active: currentTab === 'following' }"
+        :disabled="!authStore.userId"
+        @click="currentTab = 'following'"
+      >フォロー中</button>
     </div>
 
-    <TweetContainer v-if="currentTab === 'all'" />
-    <TweetContainer v-else :tweets="filteredTweets" />
+    <TweetContainer
+      v-if="currentTab === 'all'"
+    />
+    <TweetContainer
+      v-else-if="authStore.userId && currentTab === 'following'"
+      :tweets="filteredTweets"
+    />
   </div>
 </template>
     
@@ -30,9 +39,21 @@ const filteredTweets = computed(() => {
 
 onMounted(async () => {
   await tweetStore.loadTweets();
+
+  if (!authStore.userId) {
+    console.warn("未認証状態のため、フォロー中リストは取得しません");
+    return;
+  }
+
   const res = await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/follow/following?userId=${authStore.userId}`, {
     credentials: 'include'
   });
+
+  if (!res.ok) {
+    console.error("フォロー中リスト取得失敗:", res.status);
+    return;
+  }
+
   followingIds.value = await res.json();
 });
 </script>
