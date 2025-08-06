@@ -6,7 +6,8 @@ Twitter風SNSアプリケーション
 
 デプロイ環境
 - フロントエンド：Vercel（https://vercel.com）
-- バックエンド、DB：Railway（https://railway.com）
+- バックエンド：Render（https://render.com）
+- DB：Aiven（https://aiven.io）
 
 ## プロジェクト構成
 
