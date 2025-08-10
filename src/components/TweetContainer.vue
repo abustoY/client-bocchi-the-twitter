@@ -1,7 +1,7 @@
 <template>
   <div class="tweet-wrapper">
     <TweetItem
-      v-for="tweet in effectiveTweets"
+      v-for="tweet in baseTweets"
       :key="tweet.id"
       :tweet="tweet"
       :avatar-url="avatarUrls[tweet.userId]"
@@ -17,12 +17,12 @@ import TweetItem from './TweetItem.vue';
 import { useUserAvatars } from '../composables/useUserAvatars';
 
 const props = defineProps({
-  tweets: { type: Array, default: null }
+  tweets: { type: Array, default: null },
+  filterUserIds: { type: Array, default: null }
 });
 
 const tweetStore = useTweetStore();
-const effectiveTweets = computed(() => props.tweets ?? tweetStore.tweets);
-
+const baseTweets = computed(() => props.tweets ?? tweetStore.tweets);
 const avatarUrls = reactive({});
 
 const page = ref(0);
@@ -41,9 +41,26 @@ const resolveAvatars = (tweets) => {
 const loadFirstPage = async () => {
   loading.value = true;
   try {
-    const json = await tweetStore.loadTweets(0, size, false);
-    if (!Array.isArray(json) || json.length < size) hasMore.value = false;
-    resolveAvatars(json ?? []);
+    if (Array.isArray(props.filterUserIds)) {
+      // フォロー中タブ
+      if (props.filterUserIds.length === 0) {
+        // 空フォローは空表示＋ページング終了
+        tweetStore.tweets = [];
+        hasMore.value = false;
+        resolveAvatars([]);
+      } else {
+        const json = await tweetStore.loadTweetsFollowing(props.filterUserIds, 0, size, false);
+        page.value = 0;
+        if (!Array.isArray(json) || json.length < size) hasMore.value = false;
+        resolveAvatars(json ?? []);
+      }
+    } else {
+      // 全体タイムライン
+      const json = await tweetStore.loadTweets(0, size, false);
+      page.value = 0;
+      if (!Array.isArray(json) || json.length < size) hasMore.value = false;
+      resolveAvatars(json ?? []);
+    }
   } finally {
     loading.value = false;
   }
@@ -54,7 +71,12 @@ const loadNextPage = async () => {
   loading.value = true;
   try {
     page.value += 1;
-    const json = await tweetStore.loadTweets(page.value, size, true);
+    let json;
+    if (Array.isArray(props.filterUserIds)) {
+      json = await tweetStore.loadTweetsFollowing(props.filterUserIds, page.value, size, true);
+    } else {
+      json = await tweetStore.loadTweets(page.value, size, true);
+    }
     if (!Array.isArray(json) || json.length < size) hasMore.value = false;
     resolveAvatars(json ?? []);
   } finally {

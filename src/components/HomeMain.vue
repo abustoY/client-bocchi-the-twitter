@@ -3,59 +3,56 @@
     <TweetForm />
 
     <div class="tab-buttons">
-      <button :class="{ active: currentTab === 'all' }" @click="currentTab = 'all'">全て</button>
+      <button :class="{ active: currentTab === 'all' }" @click="selectTab('all')">全て</button>
       <button
         :class="{ active: currentTab === 'following' }"
         :disabled="!authStore.userId"
-        @click="currentTab = 'following'"
+        @click="selectTab('following')"
       >フォロー中</button>
     </div>
 
+    <TweetContainer v-if="currentTab === 'all'" />
+
     <TweetContainer
-      v-if="currentTab === 'all'"
+      v-else-if="authStore.userId && currentTab === 'following' && followingReady"
+      :filter-user-ids="followingIds"
     />
-    <TweetContainer
-      v-else-if="authStore.userId && currentTab === 'following'"
-      :tweets="filteredTweets"
-    />
+
   </div>
 </template>
     
 <script setup>
 import TweetForm from './TweetForm.vue';
 import TweetContainer from './TweetContainer.vue';
-import { useTweetStore } from '../stores/tweet';
 import { useAuthStore } from '../stores/auth';
-import { onMounted, ref, computed } from 'vue';
+import { ref } from 'vue';
 
 const currentTab = ref('all');
-const tweetStore = useTweetStore();
 const authStore = useAuthStore();
 const followingIds = ref([]);
 
-const filteredTweets = computed(() => {
-  return tweetStore.tweets.filter(tweet => followingIds.value.includes(tweet.userId));
-});
+const followingReady = ref(false);
 
-onMounted(async () => {
-  await tweetStore.loadTweets();
+const selectTab = async (tab) => {
+  currentTab.value = tab;
+  if (tab !== 'following') return;
+  if (!authStore.userId) return; // 未認証なら何もしない（ボタンはdisabledだが二重防止）
 
-  if (!authStore.userId) {
-    console.warn("未認証状態のため、フォロー中リストは取得しません");
-    return;
+  followingReady.value = false;
+  try {
+    const res = await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/follow/following?userId=${authStore.userId}`, {
+      credentials: 'include'
+    });
+    if (!res.ok) {
+      console.error('フォロー中リスト取得失敗:', res.status);
+      followingIds.value = [];
+      return;
+    }
+    followingIds.value = await res.json();
+  } finally {
+    followingReady.value = true;
   }
-
-  const res = await fetch(`${process.env.VUE_APP_API_HOST_URL}/api/follow/following?userId=${authStore.userId}`, {
-    credentials: 'include'
-  });
-
-  if (!res.ok) {
-    console.error("フォロー中リスト取得失敗:", res.status);
-    return;
-  }
-
-  followingIds.value = await res.json();
-});
+};
 </script>
     
 <style scoped>
