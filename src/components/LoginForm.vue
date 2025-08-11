@@ -13,18 +13,25 @@
             <input type="password" id="password" v-model="password">
         </div>
         <button type="submit">ログイン</button>
+        <div class="oidc-buttons">
+            <a class="oidc-btn google" :href="`${apiHostUrl}/oauth2/authorization/google`">Googleでログイン</a>
+            <a v-if="isLineLoginEnabled" class="oidc-btn line" :href="`${apiHostUrl}/oauth2/authorization/line`">LINEでログイン</a>
+        </div>
     </form>
 </template>
-    
+
 <script setup>
 import { useAuthStore } from '../stores/auth';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+const apiHostUrl = process.env.VUE_APP_API_HOST_URL;
 const authStore = useAuthStore();
 const router = useRouter();
 const id = ref('');
 const password = ref('');
+
+const isLineLoginEnabled = false; // LINEのOIDC設定が完了するまで LINE ログインは非表示
 
 const handleLogin = async () => {
     try {
@@ -43,7 +50,6 @@ const handleLogin = async () => {
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 #login-form {
     background-color: rgba(255, 255, 255, 0.8);
     /* 背景色を半透明の白に */
@@ -116,4 +122,31 @@ const handleLogin = async () => {
     /* ホバー時の背景色 */
 }
 
+.oidc-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.oidc-btn {
+    display: inline-block;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.oidc-btn.google {
+    background: #4285f4;
+}
+
+.oidc-btn.line {
+    background: #06c755;
+}
+
+.oidc-btn:hover {
+    opacity: 0.9;
+}
 </style>
