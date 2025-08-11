@@ -86,6 +86,7 @@ APIの接続先（VUE_APP_API_HOST_URL）やMSW（モック）の有効化設定
 - ユーザー登録
 - ログイン/ログアウト
 - Cookieベースのセッション管理
+- OIDC ログイン（Google）
 
 
 ## セキュリティ機能
