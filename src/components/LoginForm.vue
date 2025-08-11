@@ -15,7 +15,7 @@
         <button type="submit">ログイン</button>
         <div class="oidc-buttons">
             <a class="oidc-btn google" :href="`${apiHostUrl}/oauth2/authorization/google`">Googleでログイン</a>
-            <a class="oidc-btn line" :href="`${apiHostUrl}/oauth2/authorization/line`">LINEでログイン</a>
+            <a v-if="isLineLoginEnabled" class="oidc-btn line" :href="`${apiHostUrl}/oauth2/authorization/line`">LINEでログイン</a>
         </div>
     </form>
 </template>
@@ -30,6 +30,8 @@ const authStore = useAuthStore();
 const router = useRouter();
 const id = ref('');
 const password = ref('');
+
+const isLineLoginEnabled = false; // LINEのOIDC設定が完了するまで LINE ログインは非表示
 
 const handleLogin = async () => {
     try {
